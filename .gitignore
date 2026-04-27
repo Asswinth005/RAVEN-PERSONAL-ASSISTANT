@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+
+# Environment Variables
+.env
+
+# FRIDAY specific
+logs/
+temp/
+static/latest_screenshot.png
+notes.json
+reminders.json
+
+# Frontend
+node_modules/
+dist/
+.vite/

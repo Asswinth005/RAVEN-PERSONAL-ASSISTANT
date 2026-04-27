@@ -1,0 +1,29 @@
+# FRIDAY AI Assistant - Dependencies
+# Core AI
+groq>=0.9.0
+openai>=1.30.0
+
+# Voice
+SpeechRecognition>=3.10.0
+pyttsx3>=2.90
+PyAudio>=0.2.14
+
+# Web GUI
+flask>=3.0.0
+flask-socketio>=5.3.0
+
+# Automation & Utils
+psutil>=5.9.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+schedule>=1.2.0
+pyperclip>=1.8.2
+beautifulsoup4>=4.12.0
+
+# System Info
+py-cpuinfo>=9.0.0
+screeninfo>=0.8.1
+
+# Production Hosting
+gunicorn>=21.2.0
+eventlet>=0.33.3

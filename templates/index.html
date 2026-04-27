@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ assistant_name }} — AI Assistant</title>
+    <meta name="description" content="RAVEN - Advanced AI Assistant Interface. Real-time voice and text interaction with system automation.">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div id="bg-canvas"></div>
+    <div class="scan-line"></div>
+    <div class="menu-overlay" id="menu-overlay"></div>
+
+    <!-- Main Container -->
+    <div class="friday-container">
+
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <button class="menu-toggle" id="menu-toggle" title="Toggle Sidebar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="logo-container">
+                    <div class="logo-hex">
+                        <svg viewBox="0 0 100 100" class="hex-svg">
+                            <polygon points="50,2 95,25 95,75 50,98 5,75 5,25" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <text x="50" y="58" text-anchor="middle" fill="currentColor" font-family="Orbitron" font-size="22" font-weight="700">R</text>
+                        </svg>
+                    </div>
+                    <div class="logo-text">
+                        <h1 id="logo-title">{{ assistant_name }}</h1>
+                        <span class="logo-subtitle">Advanced AI System v3.0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="top-bar-center">
+                <div class="status-indicators">
+                    <div class="status-dot online" id="status-ai" title="AI Core">
+                        <span class="dot-pulse"></span>
+                        <span class="status-label">AI CORE</span>
+                    </div>
+                    <div class="status-dot online" id="status-voice" title="Voice Module">
+                        <span class="dot-pulse"></span>
+                        <span class="status-label">VOICE</span>
+                    </div>
+                    <div class="status-dot online" id="status-auto" title="Automation">
+                        <span class="dot-pulse"></span>
+                        <span class="status-label">AUTO</span>
+                    </div>
+                    <div class="status-dot online" id="status-net" title="Network">
+                        <span class="dot-pulse"></span>
+                        <span class="status-label">NET</span>
+                    </div>
+                </div>
+            </div>
+            <div class="top-bar-right">
+                <div class="clock" id="clock">--:--:--</div>
+                <div class="date" id="date">Loading...</div>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="main-grid">
+
+            <!-- Left Panel: System Metrics -->
+            <aside class="panel panel-left">
+                <div class="panel-header">
+                    <span class="panel-icon">⚡</span>
+                    <h2>System Metrics</h2>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-card" id="metric-cpu">
+                        <div class="metric-ring">
+                            <svg viewBox="0 0 120 120">
+                                <circle class="ring-bg" cx="60" cy="60" r="50"/>
+                                <circle class="ring-fill" cx="60" cy="60" r="50" id="cpu-ring"/>
+                            </svg>
+                            <div class="metric-value" id="cpu-value">0%</div>
+                        </div>
+                        <span class="metric-label">CPU</span>
+                    </div>
+                    <div class="metric-card" id="metric-ram">
+                        <div class="metric-ring">
+                            <svg viewBox="0 0 120 120">
+                                <circle class="ring-bg" cx="60" cy="60" r="50"/>
+                                <circle class="ring-fill ram" cx="60" cy="60" r="50" id="ram-ring"/>
+                            </svg>
+                            <div class="metric-value" id="ram-value">0%</div>
+                        </div>
+                        <span class="metric-label">RAM</span>
+                    </div>
+                    <div class="metric-card" id="metric-disk">
+                        <div class="metric-ring">
+                            <svg viewBox="0 0 120 120">
+                                <circle class="ring-bg" cx="60" cy="60" r="50"/>
+                                <circle class="ring-fill disk" cx="60" cy="60" r="50" id="disk-ring"/>
+                            </svg>
+                            <div class="metric-value" id="disk-value">0%</div>
+                        </div>
+                        <span class="metric-label">DISK</span>
+                    </div>
+                </div>
+
+                <div class="panel-header" style="margin-top: 1.5rem;">
+                    <span class="panel-icon">📊</span>
+                    <h2>Processes</h2>
+                </div>
+                <div class="process-list" id="process-list">
+                    <div class="process-item loading">Loading...</div>
+                </div>
+
+                <div class="panel-header" style="margin-top: 1.5rem;">
+                    <span class="panel-icon">🔧</span>
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="quick-actions">
+                    <button class="action-btn" onclick="sendCommand('system info')" id="btn-sysinfo">
+                        <span>🖥️</span> System Info
+                    </button>
+                    <button class="action-btn" onclick="sendCommand('what time is it')" id="btn-time">
+                        <span>🕐</span> Time
+                    </button>
+                    <button class="action-btn" onclick="sendCommand('weather')" id="btn-weather">
+                        <span>🌤️</span> Weather
+                    </button>
+                    <button class="action-btn" onclick="sendCommand('my ip')" id="btn-ip">
+                        <span>🌐</span> IP Info
+                    </button>
+                    <button class="action-btn" onclick="sendCommand('running processes')" id="btn-procs">
+                        <span>📊</span> Processes
+                    </button>
+                    <button class="action-btn" onclick="sendCommand('clear memory')" id="btn-clear">
+                        <span>🧹</span> Clear Memory
+                    </button>
+                    <button class="action-btn" onclick="sendCommand('news')" id="btn-news">
+                        <span>📰</span> News
+                    </button>
+                    <button class="action-btn" onclick="sendCommand('screenshot')" id="btn-snap">
+                        <span>📸</span> Screenshot
+                    </button>
+                    <button class="action-btn" onclick="sendCommand('list notes')" id="btn-notes">
+                        <span>📝</span> My Notes
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Center: Chat Interface -->
+            <section class="panel panel-center">
+                <div class="chat-header">
+                    <div class="ai-avatar" id="ai-avatar">
+                        <div class="avatar-core">
+                            <div class="avatar-ring ring-1"></div>
+                            <div class="avatar-ring ring-2"></div>
+                            <div class="avatar-ring ring-3"></div>
+                            <div class="avatar-dot"></div>
+                        </div>
+                    </div>
+                    <div class="chat-title">
+                        <h2>Communication Interface</h2>
+                        <span class="chat-status" id="chat-status">Online — Ready</span>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <!-- Messages will be injected here -->
+                </div>
+
+                <div class="chat-input-area">
+                    <div class="input-wrapper">
+                        <div class="input-glow"></div>
+                        <input type="text"
+                               id="chat-input"
+                               placeholder="Talk to FRIDAY..."
+                               autocomplete="off"
+                               spellcheck="false">
+                        <button class="voice-btn" id="voice-btn" onclick="startVoice()" title="Voice Input">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                <line x1="12" y1="19" x2="12" y2="23"/>
+                                <line x1="8" y1="23" x2="16" y2="23"/>
+                            </svg>
+                        </button>
+                        <button class="send-btn" id="send-btn" onclick="sendMessage()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"/>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Activity Log -->
+            <aside class="panel panel-right">
+                <div class="panel-header">
+                    <span class="panel-icon">📡</span>
+                    <h2>Activity Feed</h2>
+                </div>
+                <div class="activity-feed" id="activity-feed">
+                    <div class="activity-item">
+                        <span class="activity-time">--:--</span>
+                        <span class="activity-text">System initializing...</span>
+                    </div>
+                </div>
+
+                <div class="panel-header" style="margin-top: 1.5rem;">
+                    <span class="panel-icon">🛡️</span>
+                    <h2>Diagnostics</h2>
+                </div>
+                <div class="diagnostics-list">
+                    <div class="diag-item">
+                        <span class="diag-label">Core Temp</span>
+                        <span class="diag-value">Nominal</span>
+                    </div>
+                    <div class="diag-item">
+                        <span class="diag-label">Memory Leak</span>
+                        <span class="diag-value success">None</span>
+                    </div>
+                    <div class="diag-item">
+                        <span class="diag-label">Encryption</span>
+                        <span class="diag-value">AES-256</span>
+                    </div>
+                    <div class="diag-item">
+                        <span class="diag-label">Safety Lock</span>
+                        <span class="diag-value warning">Engaged</span>
+                    </div>
+                </div>
+
+                <div class="panel-header" style="margin-top: 1.5rem;">
+                    <span class="panel-icon">💡</span>
+                    <h2>Capabilities</h2>
+                </div>
+                <div class="capabilities-list">
+                    <div class="capability-item" id="cap-chat" title="Click to chat">
+                        <span class="cap-icon">🧠</span>
+                        <div class="cap-info">
+                            <span class="cap-title">AI Conversation</span>
+                            <span class="cap-desc">Natural language chat</span>
+                        </div>
+                    </div>
+                    <div class="capability-item" id="cap-voice" title="Click for voice input">
+                        <span class="cap-icon">🎤</span>
+                        <div class="cap-info">
+                            <span class="cap-title">Voice Control</span>
+                            <span class="cap-desc">Speak to interact</span>
+                        </div>
+                    </div>
+                    <div class="capability-item" id="cap-auto" title="Click for system info">
+                        <span class="cap-icon">⚙️</span>
+                        <div class="cap-info">
+                            <span class="cap-title">System Automation</span>
+                            <span class="cap-desc">Files, apps, commands</span>
+                        </div>
+                    </div>
+                    <div class="capability-item" id="cap-web" title="Click for news">
+                        <span class="cap-icon">🌐</span>
+                        <div class="cap-info">
+                            <span class="cap-title">Web Operations</span>
+                            <span class="cap-desc">Search, scrape, browse</span>
+                        </div>
+                    </div>
+                    <div class="capability-item" id="cap-monitor" title="Click for process list">
+                        <span class="cap-icon">📊</span>
+                        <div class="cap-info">
+                            <span class="cap-title">System Monitor</span>
+                            <span class="cap-desc">CPU, RAM, processes</span>
+                        </div>
+                    </div>
+                    <div class="capability-item" id="cap-reminders" title="Click for reminders">
+                        <span class="cap-icon">⏰</span>
+                        <div class="cap-info">
+                            <span class="cap-title">Reminders</span>
+                            <span class="cap-desc">Schedule alerts</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Socket.IO -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>
