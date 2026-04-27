@@ -23,7 +23,3 @@ beautifulsoup4>=4.12.0
 # System Info
 py-cpuinfo>=9.0.0
 screeninfo>=0.8.1
-
-# Production Hosting
-gunicorn>=21.2.0
-eventlet>=0.33.3

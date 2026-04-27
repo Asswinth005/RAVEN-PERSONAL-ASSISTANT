@@ -29,8 +29,8 @@ VOICE_INDEX = 1           # 0 = male, 1 = female (system dependent)
 WAKE_WORD = "raven"
 
 # ── Web GUI ───────────────────────────────────────────────
-WEB_HOST = os.getenv("WEB_HOST", "127.0.0.1")
-WEB_PORT = int(os.getenv("PORT", 5000))
+WEB_HOST = "127.0.0.1"
+WEB_PORT = 5000
 SECRET_KEY = os.getenv("SECRET_KEY", "raven-secret-2026")
 
 # ── System Prompt ─────────────────────────────────────────
