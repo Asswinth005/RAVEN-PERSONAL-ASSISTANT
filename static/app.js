@@ -275,18 +275,60 @@ function sendCommand(cmd) {
 function startVoice() {
     if (isListening) return;
 
-    isListening = true;
-    voiceBtn.classList.add('listening');
-    chatStatus.textContent = '🎤 Listening...';
-    chatStatus.style.color = 'var(--danger)';
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        // Fallback to server-side if browser doesn't support it
+        isListening = true;
+        voiceBtn.classList.add('listening');
+        chatStatus.textContent = '🎤 Listening...';
+        chatStatus.style.color = 'var(--danger)';
+        socket.emit('voice_input');
+        setTimeout(() => {
+            isListening = false;
+            voiceBtn.classList.remove('listening');
+        }, 15000);
+        return;
+    }
 
-    socket.emit('voice_input');
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
 
-    // Auto-reset after 15 seconds
-    setTimeout(() => {
+    recognition.onstart = function() {
+        isListening = true;
+        voiceBtn.classList.add('listening');
+        chatStatus.textContent = '🎤 Listening...';
+        chatStatus.style.color = 'var(--danger)';
+    };
+
+    recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        chatInput.value = transcript;
+        sendMessage(); // automatically send it
+    };
+
+    recognition.onerror = function(event) {
+        console.error("Speech recognition error", event.error);
+        addMessage('system', '⚠️ Voice input error: ' + event.error + '. Please check microphone permissions.', new Date().toLocaleTimeString());
+    };
+
+    recognition.onend = function() {
         isListening = false;
         voiceBtn.classList.remove('listening');
-    }, 15000);
+        if (chatStatus.textContent.includes('Listening')) {
+            chatStatus.textContent = isConnected ? 'Online — Ready' : 'Offline — Disconnected';
+            chatStatus.style.color = isConnected ? 'var(--success)' : 'var(--danger)';
+        }
+    };
+
+    try {
+        recognition.start();
+    } catch (e) {
+        console.error(e);
+        isListening = false;
+        voiceBtn.classList.remove('listening');
+    }
 }
 
 // ── Copy Message ──────────────────────────────────────────
