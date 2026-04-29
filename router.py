@@ -51,11 +51,45 @@ class CommandRouter:
         if any(kw in text for kw in ["screenshot", "capture screen", "snap screen"]):
             return True, self.auto.take_screenshot()
 
-        # ── Open Website ──
-        if text.startswith("open ") and any(kw in text for kw in [".com", ".org", ".net", ".io",
-                                                                     "http", "www", "website"]):
-            url = text.replace("open ", "").replace("website ", "").strip()
-            return True, self.auto.open_website(url)
+        # ── Open Website / Application ──
+        if text.startswith("open "):
+            target = text.replace("open ", "").strip()
+            if target.startswith("website "):
+                target = target.replace("website ", "", 1)
+                
+            websites = {
+                "youtube": "https://youtube.com",
+                "google": "https://google.com",
+                "facebook": "https://facebook.com",
+                "twitter": "https://twitter.com",
+                "x": "https://x.com",
+                "reddit": "https://reddit.com",
+                "github": "https://github.com",
+                "chatgpt": "https://chatgpt.com",
+                "gmail": "https://mail.google.com",
+                "instagram": "https://instagram.com",
+                "whatsapp": "https://web.whatsapp.com",
+                "netflix": "https://netflix.com",
+                "amazon": "https://amazon.com",
+                "spotify": "https://open.spotify.com",
+                "linkedin": "https://linkedin.com",
+                "twitch": "https://twitch.tv",
+                "discord": "https://discord.com/app",
+                "pinterest": "https://pinterest.com",
+                "yahoo": "https://yahoo.com",
+                "bing": "https://bing.com",
+            }
+            
+            target_spaceless = target.replace(" ", "")
+            if target in websites:
+                return True, self.auto.open_website(websites[target])
+            elif target_spaceless in websites:
+                return True, self.auto.open_website(websites[target_spaceless])
+                
+            if any(ext in target for ext in [".com", ".org", ".net", ".io", "http", "www"]):
+                return True, self.auto.open_website(target)
+                
+            return True, self.auto.open_application(target)
 
         # ── Search ──
         if any(kw in text for kw in ["youtube", "play on youtube"]):
@@ -73,10 +107,7 @@ class CommandRouter:
                 query = query.replace(prefix, "")
             return True, self.auto.web_search(query.strip())
 
-        # ── Open Application ──
-        if text.startswith("open "):
-            app = text.replace("open ", "").strip()
-            return True, self.auto.open_application(app)
+
 
         # ── IP Info ──
         if any(kw in text for kw in ["my ip", "ip address", "ip info", "where am i"]):
